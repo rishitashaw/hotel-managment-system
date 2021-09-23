@@ -4,7 +4,6 @@ import (
 	"bytes"
 	"fmt"
 	"html/template"
-	"log"
 	"net/http"
 	"path/filepath"
 
@@ -13,21 +12,20 @@ import (
 
  var functions = template.FuncMap{}
 
- var app config.AppConfig
+ var app *config.AppConfig
+
+ func NewTemplate(a *config.AppConfig)  {
+	app=a
+ }
  
 // RenderTemplate renders a template
 func RenderTemplate(w http.ResponseWriter, tmpl string) {
 
+	tc := app.TempCache
 	
-		tc, err:= CreateTemplateCache()
-		if err != nil {
-			log.Fatal(err)
-		}
-	
-
 	t, ok := tc[tmpl]
 	if !ok {
-		log.Fatal("Could not get template from template cache")
+		fmt.Println("Could not get template from template cache")
 	}
 
 	buf := new(bytes.Buffer)
@@ -35,7 +33,7 @@ func RenderTemplate(w http.ResponseWriter, tmpl string) {
 
 	_ = t.Execute(buf, nil)
 
-	_, err = buf.WriteTo(w)
+	_, err := buf.WriteTo(w)
 	if err != nil {
 		fmt.Println("error writing template to browser", err)
 	}

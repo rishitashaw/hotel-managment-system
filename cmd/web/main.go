@@ -2,7 +2,6 @@ package main
 
 import (
 	"fmt"
-	"log"
 	"net/http"
 
 	"github.com/theseregrets/hotel-managment-system-go/pkg/config"
@@ -18,10 +17,11 @@ func main() {
 	tc, err := render.CreateTemplateCache()
 
 	if err != nil {
-		log.Fatal("cannot create template cache")
+		fmt.Println("cannot create template cache")
 	}
 
 	app.TempCache = tc
+	render.NewTemplate(&app)
 
 	http.HandleFunc("/", handlers.Home)
 	http.HandleFunc("/about", handlers.About)
